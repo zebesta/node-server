@@ -54,6 +54,16 @@ app.post('/process_append', urlencodedParser, function (req, res) {
    res.end(JSON.stringify(names));
 })
 
+app.get('/test', function(req, res, next) {
+  var nameFile = fs.readFileSync(file);
+  var names = JSON.parse(nameFile);
+  res.json(names);
+});
+app.get('/testing', function (req, res) {
+   res.sendFile( __dirname + "/" + "testing.htm" );
+})
+
+
 var server = app.listen(8081, function () {
 
   var host = server.address().address
