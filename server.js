@@ -3,10 +3,18 @@ var app = express();
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var jsonfile = require('jsonfile')
-var file = 'data.json'
+var file = 'names.json'
 
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+function appendObject(obj){
+  var nameFile = fs.readFileSync(file);
+  var names = JSON.parse(nameFile);
+  names.push(obj);
+  var namesJSON = JSON.stringify(names);
+  fs.writeFileSync(file, namesJSON);
+};
 
 app.use(express.static('public'));
 
@@ -14,6 +22,7 @@ app.get('/index.htm', function (req, res) {
    res.sendFile( __dirname + "/" + "index.htm" );
 })
 
+//create intial database
 app.post('/process_post', urlencodedParser, function (req, res) {
 
    // Prepare output in JSON format
@@ -22,13 +31,27 @@ app.post('/process_post', urlencodedParser, function (req, res) {
        first_name:req.body.first_name,
        last_name:req.body.last_name
    };
-   var listOfNames = [response, response, response]
-   listOfNames.push(response);
-   console.log(response);
-  jsonfile.writeFile(file, listOfNames, {spaces: 2}, function(err) {
-    console.error(err);
-  })
-   res.end(JSON.stringify(listOfNames));
+   var listOfNames = [response]
+   console.log(listOfNames);
+   jsonfile.writeFile(file, listOfNames, {spaces: 2}, function(err) {
+     console.error(err);
+   })
+   res.end(JSON.stringify(response));
+})
+
+//append to JSON file by adding to end
+app.post('/process_append', urlencodedParser, function (req, res) {
+
+   // Prepare output in JSON format
+   response = {
+       position:1,
+       first_name:req.body.first_name,
+       last_name:req.body.last_name
+   };
+   appendObject(response);
+   var nameFile = fs.readFileSync(file);
+   var names = JSON.parse(nameFile);
+   res.end(JSON.stringify(names));
 })
 
 var server = app.listen(8081, function () {
