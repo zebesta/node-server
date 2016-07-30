@@ -6,12 +6,23 @@
     url: '/test',
     complete: function(data) {
       console.log(data);
-      document.write(data.responseText);
+      $("body").append(data.responseText);
+      var txt2 = $("<br><i></i>").text("love ");     // Create with jQuery
+      $("body").append(txt2);          // Insert new elements after <img>
+      var obj = (data.responseJSON);
+      console.log(obj);
+      console.log(obj[1].first_name);
+      var name1 = $("<br><i></i>").text("" + obj[1].first_name);
+      $("body").append(name1);          // Insert new elements after <img>
+      //document.write(data.responseText);
     }
   });
+  $("p1").after("Some text after");
   </script>
 </head>
 <body>
-  WHAT IS HAPPENING
+  <h1>First Name!</h1>
+<p1>OMG whats the names JSON??</p1>
+<h2>This is:</h2>
 </body>
 </html>
