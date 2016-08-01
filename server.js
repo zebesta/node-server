@@ -8,14 +8,6 @@ var file = 'names.json'
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-function appendObject(obj){
-  var nameFile = fs.readFileSync(file);
-  var names = JSON.parse(nameFile);
-  names.push(obj);
-  var namesJSON = JSON.stringify(names);
-  fs.writeFileSync(file, namesJSON);
-};
-
 app.use(express.static('public'));
 
 app.get('/index.htm', function (req, res) {
@@ -41,17 +33,19 @@ app.post('/process_post', urlencodedParser, function (req, res) {
 
 //append to JSON file by adding to end
 app.post('/process_append', urlencodedParser, function (req, res) {
-
+  //get existing JSON
+   var nameFile = fs.readFileSync(file);
+   var names = JSON.parse(nameFile);
    // Prepare output in JSON format
    response = {
-       position:1,
+       position:(names.length + 1),
        first_name:req.body.first_name,
        last_name:req.body.last_name
    };
-   appendObject(response);
-   var nameFile = fs.readFileSync(file);
-   var names = JSON.parse(nameFile);
-   res.end(JSON.stringify(names));
+   names.push(response);
+   var namesJSON = JSON.stringify(names);
+   fs.writeFileSync(file, namesJSON);
+   res.end(namesJSON);
 })
 
 app.get('/test', function(req, res, next) {
